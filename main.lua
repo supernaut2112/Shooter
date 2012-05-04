@@ -36,6 +36,14 @@ function restart()
 end
 
 function updateGame(dt)
+	-- Update screenshake thingy
+	if scrn_shake > 0 then
+		scrn_shake = scrn_shake - dt
+		if scrn_shake < 0 then
+			scrn_shake = 0
+		end
+	end
+	print(scrn_shake)
 	-- Update bugs
 	spawnBugs(dt)
 	for i,b in ipairs(bugs) do
@@ -61,6 +69,7 @@ function updateGame(dt)
 				bullet.alive = false
 				love.audio.stop(audioHit)
 				love.audio.play(audioHit)
+				scrn_shake = .25
 				score = score + 1
 				if(score > highscore) then
 					highscore = score
@@ -91,11 +100,15 @@ function love.draw()
   -- anim:draw(100, 100) 
 	love.graphics.scale(SCALE,SCALE)
 	drawGame()
-	print(difficulty)
+
 end
 
 function drawGame()
-
+	-- Shake camera if hit bug
+	if scrn_shake > 0 then
+		love.graphics.translate(2*(math.random()-0.25),2*(math.random()-0.25))
+	end
+	
 	-- Draw bugs
 	for i,b in ipairs(bugs) do
 		b:draw(v)
